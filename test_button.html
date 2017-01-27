@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js">
+        </script>
+        <![endif]-->
+    </meta>
+    <title>Button Test</title>
+    <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <!-- <link rel="stylesheet" href="styles.css">   -->
+    <style>
+        div#root {
+            width:100%;
+            border:1px solid gray;
+            padding:1em;
+        }
+        div#main {
+            padding:1em;
+        }
+        header, footer {
+            color:white;
+            background-color:black;
+            clear:left;
+            text-align:center;
+        }
+        table {
+            width: 100%;
+            background-color:#f1f1c1;
+        }
+        header, nav, section, article, footer {
+            border: 1px solid grey;
+            margin: 5px;
+            padding: 8px;
+        }
+        nav ul {
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 5px;
+        }
+        th {
+            border: 1px solid black;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        table caption {
+            text-align: left;
+        }
+    </style>
+  </head>
+  <body>
+    <!--
+    -->
+    <div id="root">
+        <header><h1>Button Test</h1></header>
+        <div id="main"></div>
+        <footer><h3>Press the button</h3></footer>
+    </div>
+    <script type="text/babel">
+        var contacts = [
+                {id: 1, name: 'Bill', email: 'bill@bogus.net' },
+                {id: 2, name: 'Jack', email: 'jack@gmail.com' },
+                {id: 3, name: 'Sam', email: 'sam@xvivix.net' },
+                {id: 4, name: 'Steve', email: 'steve@aprilflowers.org' },
+                {id: 5, name: 'Brian', email: 'brian@mydogdoestricks.com' },
+                {id: 6, name: 'Eddie', email: 'ed@bogus.net' }
+        ];
+      
+        var TextComponent = React.createClass({
+            render: function() {
+                return (
+                    <div>
+                    ID: {this.props.contact.id}
+                    <br />Name: {this.props.contact.name}
+                    <br />Email: {this.props.contact.email}
+                    </div>
+                );
+            }
+        });
+      
+        var MyButton = React.createClass({
+            
+            getInitialState: function() {
+                return {
+                    lastId: 0
+                };
+            },
+            
+            incrementId : function() {
+                this.setState({
+                    lastId: (this.state.lastId == this.props.contacts.length-1 ? 0 : this.state.lastId + 1)
+                });
+            },
+            
+            render : function() {
+              return (
+                <div>
+                <button onClick={this.incrementId}>
+                Click Me
+                </button>
+                    <TextComponent contact={this.props.contacts[this.state.lastId]} />
+                </div>
+              );
+            }
+        });
+        ReactDOM.render(< MyButton contacts={contacts}/ >, document.getElementById('main'));
+
+    </script>
+  </body>
+</html>
