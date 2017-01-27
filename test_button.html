@@ -25,6 +25,8 @@
             color:white;
             background-color:black;
             clear:left;
+        }
+        header {
             text-align:center;
         }
         table {
@@ -54,6 +56,8 @@
         table caption {
             text-align: left;
         }
+        ul.data-list {list-style-type: none;}
+        li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
     </style>
   </head>
   <body>
@@ -62,7 +66,7 @@
     <div id="root">
         <header><h1>Button Test</h1></header>
         <div id="main"></div>
-        <footer><h3>Press the button</h3></footer>
+        <footer><h3>Press the button to view next record</h3></footer>
     </div>
     <script type="text/babel">
         var contacts = [
@@ -77,11 +81,11 @@
         var TextComponent = React.createClass({
             render: function() {
                 return (
-                    <div>
-                    ID: {this.props.contact.id}
-                    <br />Name: {this.props.contact.name}
-                    <br />Email: {this.props.contact.email}
-                    </div>
+                    <ul className="data-list">
+                    <li><span>ID:</span>{this.props.contact.id}</li>
+                    <li><span>Name:</span>{this.props.contact.name}</li>
+                    <li><span>Email:</span>{this.props.contact.email}</li>
+                    </ul>
                 );
             }
         });
@@ -103,10 +107,10 @@
             render : function() {
               return (
                 <div>
+                <TextComponent contact={this.props.contacts[this.state.lastId]} />
                 <button onClick={this.incrementId}>
-                Click Me
+                Show Next Record
                 </button>
-                    <TextComponent contact={this.props.contacts[this.state.lastId]} />
                 </div>
               );
             }
