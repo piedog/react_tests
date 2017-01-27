@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js">
+        </script>
+        <![endif]-->
+    </meta>
+    <title>Record Navigation Test</title>
+    <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+        div#root {
+            width:100%;
+            border:1px solid gray;
+            padding:1em;
+        }
+        div#main {
+            padding:1em;
+        }
+        div.nav-control { padding: 10px;}
+        div.nav-control button, div.nav-control span {margin:10px;}
+        header, footer {
+            color:white;
+            background-color:black;
+            clear:left;
+        }
+        header {
+            text-align:center;
+        }
+        header, nav, section, article, footer {
+            border: 1px solid grey;
+            margin: 5px;
+            padding: 8px;
+        }
+        ul.data-list {list-style-type: none;}
+        li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
+    </style>
+  </head>
+  <body>
+    <div id="root">
+        <header><h1>Record Navigation Test</h1></header>
+        <div id="main"></div>
+        <footer><h3>Press the button to view next record</h3></footer>
+    </div>
+    <script type="text/babel">
+        var records = [
+                {id: 1, name: 'Bill', email: 'bill@bogus.net' },
+                {id: 2, name: 'Jack', email: 'jack@gmail.com' },
+                {id: 3, name: 'Sam', email: 'sam@xvivix.net' },
+                {id: 4, name: 'Steve', email: 'steve@aprilflowers.org' },
+                {id: 5, name: 'Brian', email: 'brian@mydogdoestricks.com' },
+                {id: 6, name: 'Eddie', email: 'ed@bogus.net' }
+        ];
+      
+        var TextComponent = React.createClass({
+            render: function() {
+                return (
+                    <ul className="data-list">
+                    <li><span>ID:</span>{this.props.rec.id}</li>
+                    <li><span>Name:</span>{this.props.rec.name}</li>
+                    <li><span>Email:</span>{this.props.rec.email}</li>
+                    </ul>
+                );
+            }
+        });
+      
+        var NavControl = React.createClass({
+            
+            getInitialState: function() {
+                return {
+                    lastId: 0,
+                    msg: '1 of '+this.props.records.length
+                };
+            },
+            
+            incrementId : function() {
+                this.setState({
+                    lastId: (this.state.lastId == this.props.records.length-1 ? 0 : this.state.lastId + 1)
+                });
+            },
+            
+            decrementId : function() {
+                this.setState({
+                    lastId: (this.state.lastId == 0 ? this.props.records.length-1 : this.state.lastId - 1)
+                });
+            },
+            
+            render : function() {
+              return (
+                <div>
+                <TextComponent rec={this.props.records[this.state.lastId]} />
+                <div className="nav-control">
+                <button onClick={this.decrementId}>
+                Show Previous Record
+                </button>
+                <button onClick={this.incrementId}>
+                Show Next Record
+                </button>
+                <span>Record {this.state.lastId+1} of {this.props.records.length}</span>
+                </div>
+                </div>
+              );
+            }
+        });
+        ReactDOM.render(< NavControl records={records}/ >, document.getElementById('main'));
+
+    </script>
+  </body>
+</html>
