@@ -35,6 +35,8 @@
         }
         ul.data-list {list-style-type: none;}
         li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
+        
+        div.row {}
     </style>
   </head>
   <body>
@@ -46,14 +48,21 @@
         <footer><h3>Press the button to view next record</h3></footer>
     </div>
     <script type="text/babel">
-        var records = [
+        var tableConfig = {
+            caption: 'My Caption'
+        };
+        
+        var dbase = {
+            headings: [ {id: 'ID'}, {name: 'Name'}, {email: 'Email'}],
+            records: [
                 {id: 1, name: 'Bill', email: 'bill@bogus.net' },
                 {id: 2, name: 'Jack', email: 'jack@gmail.com' },
                 {id: 3, name: 'Sam', email: 'sam@xvivix.net' },
                 {id: 4, name: 'Steve', email: 'steve@aprilflowers.org' },
                 {id: 5, name: 'Brian', email: 'brian@mydogdoestricks.com' },
                 {id: 6, name: 'Eddie', email: 'ed@bogus.net' }
-        ];
+            ]
+        };
         
         var NavComponent = React.createClass({
         
@@ -66,13 +75,14 @@
             render: function() {
                 return (
                     <div>
-                        Hello, world, there are {this.props.records.length} records
+                        Hello, world, there are {this.props.tbldata.recs.length} records
+                        <br />{this.props.tbldata.config.caption}
                     </div>
                 );
-            )
+            }
         });
         
-        reactDOM.render(< NavComponent records={records} />, document.getElementById('main'));
+        ReactDOM.render(< NavComponent tbldata={ {config:tableConfig, recs:dbase.records } } />, document.getElementById('main'));
     </script>
   </body>
 </html>
