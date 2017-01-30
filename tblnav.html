@@ -53,12 +53,37 @@
     <div id="root">
         <header><h1>Table Nav Test</h1></header>
         <div id="main"></div>
+        <div id="details"></div>
         <footer><h3>Press the button to view next record</h3></footer>
     </div>
     <script type="text/babel">
         var tableConfig = {
             caption: 'My Caption'
         };
+        
+        var DetailComponent = React.createClass({
+            getInitialState: function() {
+                return {
+                    id: 'ID goes here', name: 'Name goes here', email: 'Email goes here'
+                };
+            },
+            
+            updateDetails: function(rec) {
+                this.state.id = rec.id;
+                this.state.name = rec.name;
+                this.state.email = rec.email;
+            },
+            
+            render: function() {
+                return (
+                    <ul>
+                    <li>{this.state.id}</li>
+                    <li>{this.state.name}</li>
+                    <li>{this.state.email}</li>
+                    </ul>
+                );
+            }
+        });
         
         var dbase = {
             headings: {id: 'ID', name: 'Name', email: 'Email'},
@@ -87,15 +112,17 @@
             }
         });
         
+        var xxx='XXX';
         
         var RowComponent = React.createClass({
-            handleClick: function() {
+            handleClick: function(e,x) {
                 console.log(this.props.record.id);
+                console.log(x);
             },
             render: function() {
                 var rec = this.props.record;
                 return (
-                    <tr onClick={this.handleClick}>
+                    <tr onClick={this.handleClick.bind(null,xxx)}>
                     <td>{rec.id}</td>
                     <td>{rec.name}</td>
                     <td>{rec.email}</td>
@@ -121,7 +148,11 @@
             }
         });
         
-        ReactDOM.render(< TblComponent tbldata={ {config:tableConfig, db:dbase } } />, document.getElementById('main'));
+        ReactDOM.render(< TblComponent tbldata={ {config:tableConfig, db:dbase } } />,
+            document.getElementById('main'));
+        
+        ReactDOM.render(< DetailComponent />,
+            document.getElementById('details'));
     </script>
   </body>
 </html>
