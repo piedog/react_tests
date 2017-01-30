@@ -87,19 +87,33 @@
             }
         });
         
-        var BodyComponent = React.createClass({
-        
-            handleRowClick: function() {
-                console.log('handleRowClick');
+        var RowComponent = React.createClass({
+            handleClick: function() {
+                console.log(this.props.record.id);
             },
             render: function() {
-                const rows = this.props.records.map((rec) =>
-                    <tr key={rec.id} onClick={this.handleRowClick}>
+                var rec = this.props.record;
+                return (
+                    <tr onClick={this.handleClick}>
                     <td>{rec.id}</td>
                     <td>{rec.name}</td>
                     <td>{rec.email}</td>
                     </tr>
-                
+                );
+            }
+        
+        });
+        
+        
+        
+        var BodyComponent = React.createClass({
+        
+            handleRowClick: function() {
+                console.log(this);
+            },
+            render: function() {
+                const rows = this.props.records.map((rec) =>
+                    <RowComponent key={rec.id} record={rec} />
                 );
                 return (
                     <tbody>
