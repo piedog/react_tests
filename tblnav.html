@@ -7,7 +7,7 @@
         </script>
         <![endif]-->
     </meta>
-    <title>Button Test</title>
+    <title>Table Nav Test</title>
     <script src="https://unpkg.com/react@latest/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
@@ -33,6 +33,14 @@
             margin: 5px;
             padding: 8px;
         }
+        table {
+            width: 100%;
+            background-color:#f1f1c1;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
         ul.data-list {list-style-type: none;}
         li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
         
@@ -43,7 +51,7 @@
     <!--
     -->
     <div id="root">
-        <header><h1>Button Test</h1></header>
+        <header><h1>Table Nav Test</h1></header>
         <div id="main"></div>
         <footer><h3>Press the button to view next record</h3></footer>
     </div>
@@ -53,7 +61,7 @@
         };
         
         var dbase = {
-            headings: [ {id: 'ID'}, {name: 'Name'}, {email: 'Email'}],
+            headings: {id: 'ID', name: 'Name', email: 'Email'},
             records: [
                 {id: 1, name: 'Bill', email: 'bill@bogus.net' },
                 {id: 2, name: 'Jack', email: 'jack@gmail.com' },
@@ -64,25 +72,52 @@
             ]
         };
         
-        var NavComponent = React.createClass({
         
-            getInitialState: function() {
-                return {
+        var HdrComponent = React.createClass({
+            render: function() {
+                return (
+                    <thead><tr>
+                        <th key={headings.id}>{headings.id}</th>
+                        <th key={headings.name}>{headings.name}</th>
+                        <th key={headings.email}>{headings.email}</th>
+                    </tr></thead>
+                );
+            }
+        });
+        
+        var BodyComponent = React.createClass({
+            render: function() {
+                const rows = this.props.records.map((rec) =>
+                    <tr key={rec.id}>
+                    <td>{rec.id}</td>
+                    <td>{rec.name}</td>
+                    <td>{rec.email}</td>
+                    </tr>
                 
-                };
-            },
-            
+                );
+                return (
+                    <tbody>
+                        {rows}
+                    </tbody>
+                );
+            }
+        });
+        
+        
+        var TblComponent = React.createClass({
             render: function() {
                 return (
                     <div>
-                        Hello, world, there are {this.props.tbldata.recs.length} records
-                        <br />{this.props.tbldata.config.caption}
+                        <table>
+                        < HdrComponent headings={this.props.tbldata.db.headings} />
+                        < BodyComponent records={this.props.tbldata.db.records} />
+                        </table>
                     </div>
                 );
             }
         });
         
-        ReactDOM.render(< NavComponent tbldata={ {config:tableConfig, recs:dbase.records } } />, document.getElementById('main'));
+        ReactDOM.render(< TblComponent tbldata={ {config:tableConfig, db:dbase } } />, document.getElementById('main'));
     </script>
   </body>
 </html>
