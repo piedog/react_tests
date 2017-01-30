@@ -78,14 +78,15 @@
                 var headings = this.props.headings
                 const head = (
                     <thead><tr>
-                        <th key={headings.id}>{headings.id}</th>
-                        <th key={headings.name}>{headings.name}</th>
-                        <th key={headings.email}>{headings.email}</th>
+                        <th>{headings.id}</th>
+                        <th>{headings.name}</th>
+                        <th>{headings.email}</th>
                     </tr></thead>
                 );
                 return head;
             }
         });
+        
         
         var RowComponent = React.createClass({
             handleClick: function() {
@@ -101,36 +102,19 @@
                     </tr>
                 );
             }
-        
-        });
-        
-        
-        
-        var BodyComponent = React.createClass({
-        
-            handleRowClick: function() {
-                console.log(this);
-            },
-            render: function() {
-                const rows = this.props.records.map((rec) =>
-                    <RowComponent key={rec.id} record={rec} />
-                );
-                return (
-                    <tbody>
-                        {rows}
-                    </tbody>
-                );
-            }
         });
         
         
         var TblComponent = React.createClass({
             render: function() {
+                const rows = this.props.tbldata.db.records.map((rec) =>
+                    <RowComponent key={rec.id} record={rec} />
+                );
                 return (
                     <div>
                         <table>
                         < HdrComponent headings={this.props.tbldata.db.headings} />
-                        < BodyComponent records={this.props.tbldata.db.records} />
+                        <tbody>{rows}</tbody>
                         </table>
                     </div>
                 );
