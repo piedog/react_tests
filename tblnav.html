@@ -75,20 +75,26 @@
         
         var HdrComponent = React.createClass({
             render: function() {
-                return (
+                var headings = this.props.headings
+                const head = (
                     <thead><tr>
                         <th key={headings.id}>{headings.id}</th>
                         <th key={headings.name}>{headings.name}</th>
                         <th key={headings.email}>{headings.email}</th>
                     </tr></thead>
                 );
+                return head;
             }
         });
         
         var BodyComponent = React.createClass({
+        
+            handleRowClick: function() {
+                console.log('handleRowClick');
+            },
             render: function() {
                 const rows = this.props.records.map((rec) =>
-                    <tr key={rec.id}>
+                    <tr key={rec.id} onClick={this.handleRowClick}>
                     <td>{rec.id}</td>
                     <td>{rec.name}</td>
                     <td>{rec.email}</td>
