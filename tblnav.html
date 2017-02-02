@@ -45,6 +45,8 @@
         li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
         tr:hover { background-color:#eee;}
         div.row {}
+        tr.highlight { background-color:#3e3;}
+        tr.nohighlight {}
     </style>
   </head>
   <body>
@@ -116,15 +118,23 @@
         
         
         var RowComponent = React.createClass({
+            getInitialState: function() {
+                return {
+                    isSelected: false
+                };
+            },
             handleClick: function() {
+                this.setState({isSelected: true}, () => {
+                        console.log('isSelected='+this.state.isSelected)})
                 console.log("RowComponent::handleClick()");
                 console.log(this.props.record.id);
-                this.props.callbackParent(this.props.record);
+                this.props.callbackParent(this.props.record, this);
             },
             render: function() {
                 var rec = this.props.record;
+                var highlightClass = this.state.isSelected === true ? 'highlight' : 'nohighlight';
                 return (
-                    <tr onClick={this.handleClick}>
+                    <tr onClick={this.handleClick} className={highlightClass}>
                     <td>{rec.id}</td>
                     <td>{rec.name}</td>
                     <td>{rec.email}</td>
@@ -138,19 +148,23 @@
         
             getInitialState: function() {
                 return {
-                    selectedRow: 'None'
+                    selectedRow: 'None',
+                    selectedObj: null
                 };
             },
         
-            onRowSelected: function(rec) {
+            onRowSelected: function(rec, obj) {
                 console.log("TblComponent::onRowSelected()");
                 console.log(rec);
+                console.log(this.state.selectedObj);
                 var last = this.state.selectedRow;
+                var lastObj = this.state.selectedObj;
                 this.refs.detailArea.updateDetails(rec);
                
                 // selectedRow is updated asynchronously so use the setState callback function
-                this.setState({selectedRow: rec.id}, () => {
-                    console.log('last='+last+', current='+this.state.selectedRow)
+                this.setState({selectedRow: rec.id, selectedObj: obj}, () => {
+                    console.log('TblComponent::onRowSelected() in setState, last='+last+', current='+this.state.selectedRow);
+                    console.log(obj);
                 });
             },
             
