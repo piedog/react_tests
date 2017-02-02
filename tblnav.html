@@ -43,7 +43,7 @@
         }
         ul.data-list {list-style-type: none;}
         li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
-        
+        tr:hover { background-color:#eee;}
         div.row {}
     </style>
   </head>
@@ -53,33 +53,35 @@
     <div id="root">
         <header><h1>Table Nav Test</h1></header>
         <div id="main"></div>
-        <div id="details"></div>
-        <footer><h3>Press the button to view next record</h3></footer>
+        <footer><h3>Select record for details</h3></footer>
     </div>
     <script type="text/babel">
         var tableConfig = {
-            caption: 'My Caption'
+            caption: 'My Caption',
+            whenRowSelected: null
         };
         
         var DetailComponent = React.createClass({
             getInitialState: function() {
                 return {
-                    id: 'ID goes here', name: 'Name goes here', email: 'Email goes here'
+                    rec: {id: 'ID goes here', name: 'Name goes here', email: 'Email goes here'}
                 };
             },
             
             updateDetails: function(rec) {
-                this.state.id = rec.id;
-                this.state.name = rec.name;
-                this.state.email = rec.email;
+                console.log("DetailComponent::updateDetails()");
+                console.log(rec);
+                this.setState({rec: rec});
             },
             
             render: function() {
+                console.log("DetailComponent::render()");
+                console.log(this.state.rec);
                 return (
                     <ul>
-                    <li>{this.state.id}</li>
-                    <li>{this.state.name}</li>
-                    <li>{this.state.email}</li>
+                    <li>{this.state.rec.id}</li>
+                    <li>{this.state.rec.name}</li>
+                    <li>{this.state.rec.email}</li>
                     </ul>
                 );
             }
@@ -112,17 +114,17 @@
             }
         });
         
-        var xxx='XXX';
         
         var RowComponent = React.createClass({
-            handleClick: function(e,x) {
+            handleClick: function() {
+                console.log("RowComponent::handleClick()");
                 console.log(this.props.record.id);
-                console.log(x);
+                this.props.callbackParent(this.props.record);
             },
             render: function() {
                 var rec = this.props.record;
                 return (
-                    <tr onClick={this.handleClick.bind(null,xxx)}>
+                    <tr onClick={this.handleClick}>
                     <td>{rec.id}</td>
                     <td>{rec.name}</td>
                     <td>{rec.email}</td>
@@ -133,9 +135,29 @@
         
         
         var TblComponent = React.createClass({
+        
+            getInitialState: function() {
+                return {
+                    selectedRow: 'None'
+                };
+            },
+        
+            onRowSelected: function(rec) {
+                console.log("TblComponent::onRowSelected()");
+                console.log(rec);
+                var last = this.state.selectedRow;
+                this.refs.detailArea.updateDetails(rec);
+               
+                // selectedRow is updated asynchronously so use the setState callback function
+                this.setState({selectedRow: rec.id}, () => {
+                    console.log('last='+last+', current='+this.state.selectedRow)
+                });
+            },
+            
             render: function() {
                 const rows = this.props.tbldata.db.records.map((rec) =>
-                    <RowComponent key={rec.id} record={rec} />
+                    <RowComponent key={rec.id} record={rec}
+                        callbackParent={this.onRowSelected} callbackAction={this.doDetailsUpdate} />
                 );
                 return (
                     <div>
@@ -143,6 +165,9 @@
                         < HdrComponent headings={this.props.tbldata.db.headings} />
                         <tbody>{rows}</tbody>
                         </table>
+                        <div id="details">
+                            < DetailComponent ref='detailArea' />
+                        </div>
                     </div>
                 );
             }
@@ -150,9 +175,6 @@
         
         ReactDOM.render(< TblComponent tbldata={ {config:tableConfig, db:dbase } } />,
             document.getElementById('main'));
-        
-        ReactDOM.render(< DetailComponent />,
-            document.getElementById('details'));
     </script>
   </body>
 </html>
