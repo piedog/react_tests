@@ -41,16 +41,34 @@
             border: 1px solid black;
             border-collapse: collapse;
         }
-        ul.data-list {list-style-type: none;}
+        ul {list-style-type: none;}
         li span {color:#708090;font-weight:bold;padding:15px;font-style:italic;}
-        tr:hover { background-color:#eee;}
+        tbody tr:hover { background-color:#eee;}
+        tbody tr.highlight:hover { background-color:#3df2ef;}
         div.row {}
         tr.highlight { background-color:#3e3;}
-        tr.nohighlight {}
+        div.details-area {border: 1px solid gray;}
     </style>
   </head>
   <body>
     <!--
+    This reactjs Application displays a table with  3 columns: ID, Name, and Email Address. When a row
+    is selected, it is highlighted and the detail information is displayed in the detail
+    area below. If a row was already selected selected, its highlighed color is reset when
+    the current row is selected.
+    
+    The purpose of this app is to demonstrate how to do the following:
+        1. Populate the table with data from an array. This could very well be results
+           from a web service
+        2. Compose a component (TblComponent) that contains 3 child components:
+                HdrComponent, multiple RowComponents, and a DetailComponent
+        3. Pass information from parent component to child components
+        4. Notify components to be modified when an event occurs in a sibling.
+           In this case, a row is clicked. The row is, of course, one of many children of
+           the table. This event causes these actions:
+                The row is highlighed
+                The DetailComponent is modified to display data from the selected row
+                If another row was previously selected, its highlighting will be turned off
     -->
     <div id="root">
         <header><h1>Table Nav Test</h1></header>
@@ -66,31 +84,30 @@
         var DetailComponent = React.createClass({
             getInitialState: function() {
                 return {
-                    rec: {id: 'ID goes here', name: 'Name goes here', email: 'Email goes here'}
+                    rec: {id: '', name: '', email: ''}
                 };
             },
             
             updateDetails: function(rec) {
-                console.log("DetailComponent::updateDetails()");
-                console.log(rec);
                 this.setState({rec: rec});
             },
             
             render: function() {
-                console.log("DetailComponent::render()");
-                console.log(this.state.rec);
                 return (
+                    <div className="details-area">
+                        <h4>Details of Selected Row</h4>
                     <ul>
-                    <li>{this.state.rec.id}</li>
-                    <li>{this.state.rec.name}</li>
-                    <li>{this.state.rec.email}</li>
+                    <li><span>ID:</span> {this.state.rec.id}</li>
+                    <li><span>Name:</span> {this.state.rec.name}</li>
+                    <li><span>Email:</span> {this.state.rec.email}</li>
                     </ul>
+                    </div>
                 );
             }
         });
         
         var dbase = {
-            headings: {id: 'ID', name: 'Name', email: 'Email'},
+            headings: {id: 'ID', name: 'Name', email: 'Email Address'},
             records: [
                 {id: 1, name: 'Bill', email: 'bill@bogus.net' },
                 {id: 2, name: 'Jack', email: 'jack@gmail.com' },
@@ -125,15 +142,12 @@
             },
             
             unhighlight: function() {
-                console.log('RowComponent::unhighlight()');
                 this.setState({isSelected: false});
             },
             
             handleClick: function() {
                 this.setState({isSelected: true}, () => {
-                        console.log('isSelected='+this.state.isSelected)})
-                console.log("RowComponent::handleClick()");
-                console.log(this.props.record.id);
+                        console.log('isSelected='+this.state.isSelected)});
                 this.props.callbackParent(this.props.record, this);
             },
             render: function() {
@@ -154,27 +168,19 @@
         
             getInitialState: function() {
                 return {
-                    selectedRow: 'None',
-                    selectedObj: null
+                    selectedRow: 'None',        // not used
+                    selectedRowObj: null        // this is the previous row that was selected
                 };
             },
         
-            onRowSelected: function(rec, obj) {
-                console.log("TblComponent::onRowSelected()");
-                console.log(rec);
-                console.log(this.state.selectedObj);
+            onRowSelected: function(rec, rowObj) {
                 var last = this.state.selectedRow;
-                var lastObj = this.state.selectedObj;
-                if (this.state.selectedObj !== null) {
-                    this.state.selectedObj.unhighlight();
+                var lastRowObj = this.state.selectedRowObj;
+                if (this.state.selectedRowObj !== null) {
+                    this.state.selectedRowObj.unhighlight();  // call the row's "unhighlight()" function
                 }
-                this.refs.detailArea.updateDetails(rec);
-               
-                // selectedRow is updated asynchronously so use the setState callback function to display state changes
-                this.setState({selectedRow: rec.id, selectedObj: obj}, () => {
-                    console.log('TblComponent::onRowSelected() in setState, last='+last+', current='+this.state.selectedRow);
-                    console.log(obj);
-                });
+                this.refs.detailArea.updateDetails(rec);   // update the details with info from the selected row
+-               this.setState({selectedRow: rec.id, selectedRowObj: rowObj});
             },
             
             render: function() {
