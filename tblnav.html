@@ -123,6 +123,12 @@
                     isSelected: false
                 };
             },
+            
+            unhighlight: function() {
+                console.log('RowComponent::unhighlight()');
+                this.setState({isSelected: false});
+            },
+            
             handleClick: function() {
                 this.setState({isSelected: true}, () => {
                         console.log('isSelected='+this.state.isSelected)})
@@ -132,7 +138,7 @@
             },
             render: function() {
                 var rec = this.props.record;
-                var highlightClass = this.state.isSelected === true ? 'highlight' : 'nohighlight';
+                var highlightClass = this.state.isSelected === true ? 'highlight' : '';
                 return (
                     <tr onClick={this.handleClick} className={highlightClass}>
                     <td>{rec.id}</td>
@@ -159,9 +165,12 @@
                 console.log(this.state.selectedObj);
                 var last = this.state.selectedRow;
                 var lastObj = this.state.selectedObj;
+                if (this.state.selectedObj !== null) {
+                    this.state.selectedObj.unhighlight();
+                }
                 this.refs.detailArea.updateDetails(rec);
                
-                // selectedRow is updated asynchronously so use the setState callback function
+                // selectedRow is updated asynchronously so use the setState callback function to display state changes
                 this.setState({selectedRow: rec.id, selectedObj: obj}, () => {
                     console.log('TblComponent::onRowSelected() in setState, last='+last+', current='+this.state.selectedRow);
                     console.log(obj);
