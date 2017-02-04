@@ -144,7 +144,7 @@
             handleClick: function() {
                 this.setState({isSelected: true}, () => {
                         console.log('isSelected='+this.state.isSelected)});
-                this.props.callbackParent(this.props.record, this);
+                this.props.callToParent(this.props.record, this);
             },
             render: function() {
                 var rec = this.props.record;
@@ -175,14 +175,15 @@
                 if (this.state.selectedRowObj !== null) {
                     this.state.selectedRowObj.unhighlight();  // call the row's "unhighlight()" function
                 }
-                this.refs.detailArea.updateDetails(rec);   // update the details with info from the selected row
+                
+                // update the details with info from the selected row
+                this.refs.detailArea.updateDetails(rec);
 -               this.setState({selectedRow: rec.id, selectedRowObj: rowObj});
             },
             
             render: function() {
                 const rows = this.props.db.records.map((rec) =>
-                    <RowComponent key={rec.id} record={rec}
-                        callbackParent={this.onRowSelected} callbackAction={this.doDetailsUpdate} />
+                    <RowComponent key={rec.id} record={rec} callToParent={this.onRowSelected} />
                 );
                 return (
                     <div>
@@ -198,8 +199,7 @@
             }
         });
         
-        ReactDOM.render(< TblComponent db={dbase} />,
-            document.getElementById('main'));
+        ReactDOM.render(< TblComponent db={dbase} />, document.getElementById('main'));
     </script>
   </body>
 </html>
