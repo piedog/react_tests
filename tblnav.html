@@ -76,10 +76,6 @@
         <footer><h3>Select record for details</h3></footer>
     </div>
     <script type="text/babel">
-        var tableConfig = {
-            caption: 'My Caption',
-            whenRowSelected: null
-        };
         
         var DetailComponent = React.createClass({
             getInitialState: function() {
@@ -184,14 +180,14 @@
             },
             
             render: function() {
-                const rows = this.props.tbldata.db.records.map((rec) =>
+                const rows = this.props.db.records.map((rec) =>
                     <RowComponent key={rec.id} record={rec}
                         callbackParent={this.onRowSelected} callbackAction={this.doDetailsUpdate} />
                 );
                 return (
                     <div>
                         <table>
-                        < HdrComponent headings={this.props.tbldata.db.headings} />
+                        < HdrComponent headings={this.props.db.headings} />
                         <tbody>{rows}</tbody>
                         </table>
                         <div id="details">
@@ -202,7 +198,7 @@
             }
         });
         
-        ReactDOM.render(< TblComponent tbldata={ {config:tableConfig, db:dbase } } />,
+        ReactDOM.render(< TblComponent db={dbase} />,
             document.getElementById('main'));
     </script>
   </body>
